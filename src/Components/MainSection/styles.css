@@ -69,3 +69,14 @@
         width: 90%;
     }
 }
+
+@media(max-width: 515px){
+    .main-date-container h1{
+        font-size: 48px;
+    }
+    .main-date-container p,
+    .main-date-container button{
+        font-size: 14px;
+    }
+   
+}
