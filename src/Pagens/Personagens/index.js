@@ -1,42 +1,57 @@
 import  React, { useEffect, useState} from 'react';
 import HeaderResponsive from '../../Components/HeaderResponsive';
 import api from '../../Api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import './styles.css';
+import Card from "../../Components/Card";
 
 function Personagem(){
     const [data, setData] = useState(null);
-    const [name, setName] = useState();
+    const [name, setName] = useState("");
     
-
-    useEffect( () => {
-        async function load(params) {
-            let res = await api.getPersonagemByName();
-            setData(res.data)
-            console.log(data)
+        async function load() {
+            let res = await api.getPersonagemByName(name);
+            setData(res)
         }
-         load();   
-    }, [data]);
 
-    function clickMouse(event){
-        event.preventDefault();
-        console.log("Escolhendo o nome: ", name)
-        //let res = await api.getPersonagemByName(name);
-    }
+        async function searchCharacter(event){
+           event.preventDefault(useEffect);
+           setData(null);
+           if(name){
+               load();
+           }
+        }
+
+        function handleName(event){
+            setName(event.target.value);
+        }
 
     return(
         <div>
             <HeaderResponsive/>
             <div className="search-container">
-                <form onSubmit={clickMouse}>
-                    <input onChange={(event) => {
-                        setName(event.target.value);
-                    }}/>
+                <form onSubmit={searchCharacter}>
+                    <input onChange={handleName}/>
                     <button type="submit">
                         <FontAwesomeIcon icon={faSearch} size="lg"/>
-                    </button>
-                    
+                    </button>    
                 </form>
+            </div>
+            <div className="results-container">
+                {data && 
+                     ((data.error)
+                        ? <p>Busca não encontrada</p> 
+                        : data.results.map((item, key) => {
+                           return <Card 
+                              key={item.id} 
+                              id={item.id} 
+                              img={item.image} 
+                              name={item.name}
+                            /> 
+                        })
+                    )
+                }
             </div>
         </div>
     );
